@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A fully responsive multimedia streaming application",
   "private": true,
+  "type": "module",
   "dependencies": {
     "concurrently": "^9.2.1",
     "framer-motion": "^10.16.16",
@@ -25,7 +26,9 @@
   "scripts": {
     "dev": "concurrently -n web,signal -c cyan,magenta \"vite\" \"npm --prefix server run dev\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "serve": "npm run build && npm start"
   },
   "engines": {
     "node": ">=18"

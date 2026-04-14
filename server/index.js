@@ -1,8 +1,26 @@
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import { randomUUID } from 'crypto';
+import { createReadStream, existsSync, statSync } from 'fs';
+import { extname, join, normalize } from 'path';
+import { fileURLToPath } from 'url';
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const distDir = join(__dirname, '..', 'dist');
+const indexHtml = join(distDir, 'index.html');
+
+const contentTypes = {
+  '.css': 'text/css; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.txt': 'text/plain; charset=utf-8',
+  '.webp': 'image/webp',
+};
 
 /**
  * Rooms:
@@ -11,9 +29,35 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3001;
  */
 const rooms = new Map();
 
-const server = http.createServer((_, res) => {
-  res.writeHead(200, { 'content-type': 'text/plain' });
-  res.end('MediaStream signaling server running.\n');
+const sendFile = (filePath, res) => {
+  const contentType = contentTypes[extname(filePath)] || 'application/octet-stream';
+  res.writeHead(200, { 'content-type': contentType });
+  createReadStream(filePath).pipe(res);
+};
+
+const server = http.createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ ok: true }));
+    return;
+  }
+
+  if (!existsSync(indexHtml)) {
+    res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+    res.end('MediaStream signaling server running. Build the frontend with npm run build to serve the app.\n');
+    return;
+  }
+
+  const requestPath = decodeURIComponent(new URL(req.url || '/', `http://${req.headers.host}`).pathname);
+  const normalizedPath = normalize(requestPath).replace(/^(\.\.[/\\])+/, '');
+  const staticPath = join(distDir, normalizedPath === '/' ? 'index.html' : normalizedPath);
+
+  if (staticPath.startsWith(distDir) && existsSync(staticPath) && statSync(staticPath).isFile()) {
+    sendFile(staticPath, res);
+    return;
+  }
+
+  sendFile(indexHtml, res);
 });
 
 const wss = new WebSocketServer({ server });

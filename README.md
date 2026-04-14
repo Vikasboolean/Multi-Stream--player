@@ -117,11 +117,61 @@ npm run build
 
 The production build will be in the `dist` directory.
 
+### Run Production Server
+
+```bash
+npm start
+```
+
+The production server serves the built React app and the live WebSocket signaling server from the same host.
+
 ### Preview Production Build
 
 ```bash
 npm run preview
 ```
+
+## Deployment Environment Variables
+
+If your frontend and signaling server are deployed together with `npm start`, you do not need to set a signaling URL. The app will automatically use the current host.
+
+If the signaling server is deployed separately, create this variable in your frontend deployment provider before building:
+
+```bash
+VITE_SIGNALING_URL=wss://your-signaling-server.example.com
+```
+
+For local setup, copy `.env.example` to `.env` and update `VITE_SIGNALING_URL`.
+
+The signaling server also supports:
+
+```bash
+PORT=3001
+```
+
+Most hosting providers set `PORT` automatically, so only configure it when your deployment needs a fixed port.
+
+## Deploying
+
+### Single Node Web Service
+
+Use this setup for platforms that support long-running Node processes and WebSockets, such as Render, Railway, Fly.io, or a VPS.
+
+```bash
+npm ci
+npm run build
+npm start
+```
+
+The included `render.yaml` is ready for Render Blueprint deployment.
+
+### Static Frontend Host
+
+Static hosts can serve the React build, but live streaming requires a separate deployed signaling server.
+
+1. Deploy the frontend with `npm run build`.
+2. Deploy `server/index.js` as a long-running Node service.
+3. Set `VITE_SIGNALING_URL` in the frontend deployment to the server WebSocket URL, for example `wss://your-signaling-server.example.com`.
 
 ## Usage Guide
 
