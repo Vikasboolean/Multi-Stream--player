@@ -1,0 +1,12 @@
+{
+  "name": "mediastream-signaling",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
+
