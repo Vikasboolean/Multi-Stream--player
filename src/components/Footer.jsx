@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { FiGithub, FiTwitter, FiLinkedin } from 'react-icons/fi';
 
+const REEL_ROOM_URL = 'https://reel-room-ebon.vercel.app/';
+
 const Footer = () => {
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto">
@@ -44,6 +46,16 @@ const Footer = () => {
                   Favorites
                 </Link>
               </li>
+              <li>
+                <a
+                  href={REEL_ROOM_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-600 dark:text-gray-400 hover:text-blue-500 text-sm transition-colors"
+                >
+                  Reel Room
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -65,7 +77,9 @@ const Footer = () => {
             </h4>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://github.com/Vikasboolean/Multi-Stream--player"
+                target="_blank"
+                rel="noreferrer"
                 className="text-gray-600 dark:text-gray-400 hover:text-blue-500 transition-colors"
                 aria-label="GitHub"
               >

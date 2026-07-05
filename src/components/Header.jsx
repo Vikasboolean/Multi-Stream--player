@@ -2,7 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useSearch } from '../context/SearchContext';
-import { FiSun, FiMoon, FiSearch, FiUser, FiLogOut } from 'react-icons/fi';
+import { FiSun, FiMoon, FiSearch, FiUser, FiLogOut, FiFilm } from 'react-icons/fi';
+
+const REEL_ROOM_URL = 'https://reel-room-ebon.vercel.app/';
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -41,6 +43,17 @@ const Header = () => {
           </div>
 
           <div className="order-2 flex flex-shrink-0 items-center gap-2 sm:order-3 sm:gap-4">
+            <a
+              href={REEL_ROOM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-purple-600 px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 sm:px-4"
+              aria-label="Open Reel Room"
+              title="Open Reel Room"
+            >
+              <FiFilm className="h-5 w-5 flex-shrink-0" />
+            </a>
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
