@@ -1,11 +1,16 @@
+# Exported from Render on 2026-07-05T13:58:56Z
+version: "1"
 services:
-  - type: web
-    name: multimedia-streaming-app
-    env: node
-    plan: free
-    buildCommand: npm ci && npm run build
-    startCommand: npm start
-    healthCheckPath: /health
-    envVars:
-      - key: NODE_VERSION
-        value: 20
+- type: web
+  name: multimedia-streaming-app
+  runtime: node
+  repo: https://github.com/Vikasboolean/Multi-Stream--player
+  plan: free
+  envVars:
+  - key: NODE_VERSION
+    sync: false
+  region: oregon
+  buildCommand: npm ci && npm run build
+  startCommand: npm start
+  healthCheckPath: /health
+  autoDeployTrigger: commit
