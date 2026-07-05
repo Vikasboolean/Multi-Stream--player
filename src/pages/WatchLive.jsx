@@ -170,18 +170,18 @@ const WatchLive = () => {
   }, [roomId]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-5xl">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Link
                 to="/live"
                 className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
               >
                 Back
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <FiRadio className="w-7 h-7" />
                 Watch Live
               </h1>
@@ -194,7 +194,7 @@ const WatchLive = () => {
 
         <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-black shadow-lg">
           {(status === 'connecting' || status === 'live') && (
-            <div className="absolute top-3 left-3 z-10 flex items-center gap-2">
+            <div className="absolute top-2 left-2 right-2 z-10 flex flex-wrap items-center gap-2 sm:top-3 sm:left-3 sm:right-auto">
               <span className="inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 text-xs font-bold text-white">
                 <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
                 LIVE

@@ -43,9 +43,9 @@ const MediaCard = ({ item, viewMode = 'grid' }) => {
       >
         <Link
           to={`/player/${item.type}/${item.id}`}
-          className="flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
+          className="flex flex-col gap-4 p-3 sm:flex-row sm:items-center sm:p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group"
         >
-          <div className="relative w-32 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="relative w-full aspect-video sm:w-32 sm:h-20 sm:aspect-auto flex-shrink-0 rounded-lg overflow-hidden">
             <img
               src={item.thumbnail}
               alt={item.title}
@@ -62,7 +62,7 @@ const MediaCard = ({ item, viewMode = 'grid' }) => {
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                   {item.title}
@@ -70,7 +70,7 @@ const MediaCard = ({ item, viewMode = 'grid' }) => {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
                   {item.description}
                 </p>
-                <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-gray-500 dark:text-gray-400">
                   <span className="flex items-center space-x-1">
                     {getIcon()}
                     <span>{item.category}</span>
@@ -82,7 +82,7 @@ const MediaCard = ({ item, viewMode = 'grid' }) => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-end gap-2 sm:justify-start">
             <button
               onClick={handleFavorite}
               className={`p-2 rounded-lg transition-colors ${
@@ -148,12 +148,12 @@ const MediaCard = ({ item, viewMode = 'grid' }) => {
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
             {item.description}
           </p>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
               <span>{item.views?.toLocaleString()} views</span>
-              {item.artist && <span>{item.artist}</span>}
+              {item.artist && <span className="truncate">{item.artist}</span>}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleFavorite}
                 className={`p-2 rounded-lg transition-colors ${

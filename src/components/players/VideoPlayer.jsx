@@ -125,7 +125,7 @@ const VideoPlayer = ({ media, onClose }) => {
 
       {showControls && (
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end">
-          <div className="px-4 pb-4 space-y-2">
+          <div className="px-3 pb-3 space-y-2 sm:px-4 sm:pb-4">
             <div
               className="w-full h-2 bg-gray-700 rounded-full cursor-pointer group"
               onClick={handleSeek}
@@ -136,8 +136,8 @@ const VideoPlayer = ({ media, onClose }) => {
               />
             </div>
 
-            <div className="flex items-center justify-between text-white">
-              <div className="flex items-center space-x-4">
+            <div className="flex flex-col gap-3 text-white sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 <button
                   onClick={togglePlay}
                   className="p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -167,15 +167,15 @@ const VideoPlayer = ({ media, onClose }) => {
                   step="0.01"
                   value={volume}
                   onChange={(e) => setVolume(e.target.value)}
-                  className="w-24"
+                  className="w-20 sm:w-24"
                 />
 
-                <span className="text-sm">
+                <span className="text-xs sm:text-sm">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => {
                     if (isFav) removeFromFavorites(media.id);
@@ -212,7 +212,7 @@ const VideoPlayer = ({ media, onClose }) => {
 
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+                  className="px-3 py-2 sm:px-4 bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
                 >
                   Close
                 </button>
@@ -222,9 +222,9 @@ const VideoPlayer = ({ media, onClose }) => {
         </div>
       )}
 
-      <div className="absolute top-4 left-4 text-white">
-        <h2 className="text-2xl font-bold">{media.title}</h2>
-        <p className="text-sm text-gray-300">{media.description}</p>
+      <div className="absolute top-3 left-3 right-3 text-white sm:top-4 sm:left-4 sm:right-auto">
+        <h2 className="text-lg sm:text-2xl font-bold line-clamp-2">{media.title}</h2>
+        <p className="hidden text-sm text-gray-300 sm:block">{media.description}</p>
       </div>
     </div>
   );

@@ -105,8 +105,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {searchQuery ? (
-        <div className="container mx-auto px-4 py-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        <div className="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 break-words">
             Search Results for "{searchQuery}"
           </h2>
           {filteredMedia.length > 0 ? (
@@ -126,7 +126,7 @@ const Home = () => {
       ) : (
         <>
           {/* Hero Section — animated background behind headline */}
-          <div className="relative flex h-[60vh] min-h-[400px] items-center justify-center overflow-hidden bg-slate-950">
+          <div className="relative flex min-h-[430px] items-center justify-center overflow-hidden bg-slate-950 py-12 sm:h-[60vh] sm:min-h-[400px]">
             <motion.div
               aria-hidden
               className="pointer-events-none absolute inset-0 z-0"
@@ -190,10 +190,10 @@ const Home = () => {
               </motion.div>
             ))}
             {/* z-10 sits under icons (z-20) so device tiles stay visible; pointer-events passes through to children */}
-            <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white pointer-events-none">
+            <div className="relative z-10 mx-auto max-w-4xl px-3 text-center text-white pointer-events-none sm:px-4">
               <div className="pointer-events-auto">
               <motion.h1
-                className="text-5xl md:text-6xl font-bold mb-4 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-2"
+                className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-2"
                 variants={heroTitleContainer}
                 initial="hidden"
                 animate="visible"
@@ -261,7 +261,7 @@ const Home = () => {
                 </motion.span>
               </motion.h1>
               <motion.p
-                className="text-xl md:text-2xl mb-8 text-gray-200"
+                className="text-base sm:text-xl md:text-2xl mb-8 text-gray-200"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.55, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -269,7 +269,7 @@ const Home = () => {
                 Stream videos, music, and view images all in one place
               </motion.p>
               <motion.button
-                className="px-8 py-4 bg-white text-blue-600 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors flex items-center space-x-2 mx-auto"
+                className="w-full max-w-xs justify-center px-6 py-3 sm:w-auto sm:px-8 sm:py-4 bg-white text-blue-600 rounded-lg font-semibold text-base sm:text-lg hover:bg-gray-100 transition-colors flex items-center space-x-2 mx-auto"
                 initial={{ opacity: 0, y: 14, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
@@ -284,12 +284,12 @@ const Home = () => {
             </div>
           </div>
 
-          <div className="container mx-auto px-4 py-8">
+          <div className="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
             {/* Continue Watching */}
             {filteredContinueWatching.length > 0 && (
               <section className="mb-12">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
                     <FiPlay className="w-6 h-6" />
                     <span>Continue Watching</span>
                   </h2>
@@ -304,8 +304,8 @@ const Home = () => {
 
             {/* Featured Content */}
             <section className="mb-12">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center space-x-2">
                   <FiTrendingUp className="w-6 h-6" />
                   <span>Featured Content</span>
                 </h2>
@@ -319,7 +319,7 @@ const Home = () => {
 
             {/* Recently Added */}
             <section className="mb-12">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
                 Recently Added
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

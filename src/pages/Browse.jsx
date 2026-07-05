@@ -131,17 +131,17 @@ const Browse = () => {
   }, [media, selectedCategory, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 space-y-4 md:space-y-0">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <div className="flex w-full flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
               Browse Media
             </h1>
             <button
               type="button"
               onClick={() => navigate('/live')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors w-fit"
+              className="inline-flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors sm:w-auto"
             >
               <span className="h-2.5 w-2.5 rounded-full bg-white animate-pulse" />
               Live Streaming
@@ -149,7 +149,7 @@ const Browse = () => {
             <button
               type="button"
               onClick={toggleLiveStreams}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:bg-black dark:hover:bg-gray-200 transition-colors w-fit"
+              className="inline-flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:bg-black dark:hover:bg-gray-200 transition-colors sm:w-auto"
             >
               <FiRadio className="w-4 h-4" />
               {showLiveStreams ? 'Hide running streams' : 'Show running streams'}
@@ -178,8 +178,8 @@ const Browse = () => {
 
         {showLiveStreams && (
           <div className="mb-8">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                 Running streams
               </h2>
               <span className="inline-flex items-center gap-2 rounded-full bg-red-100 dark:bg-red-950/40 px-3 py-1 text-xs font-semibold text-red-700 dark:text-red-300">

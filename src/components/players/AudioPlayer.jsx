@@ -107,17 +107,17 @@ const AudioPlayer = ({ media, playlist = [], onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-8">
-        <div className="text-center mb-8">
-          <div className="w-64 h-64 mx-auto mb-6 rounded-2xl overflow-hidden shadow-xl">
+    <div className="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 z-50 flex items-center justify-center overflow-y-auto p-3 sm:p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-4 sm:p-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="w-44 h-44 sm:w-64 sm:h-64 mx-auto mb-4 sm:mb-6 rounded-2xl overflow-hidden shadow-xl">
             <img
               src={currentMedia.thumbnail}
               alt={currentMedia.title}
               className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
             {currentMedia.title}
           </h2>
           {currentMedia.artist && (
@@ -148,7 +148,7 @@ const AudioPlayer = ({ media, playlist = [], onClose }) => {
             <span>{formatTime(duration)}</span>
           </div>
 
-          <div className="flex items-center justify-center space-x-6">
+          <div className="flex items-center justify-center gap-4 sm:gap-6">
             <button
               onClick={prevTrack}
               disabled={playlist.length === 0 || currentTrackIndex === 0}
@@ -177,7 +177,7 @@ const AudioPlayer = ({ media, playlist = [], onClose }) => {
             </button>
           </div>
 
-          <div className="flex items-center justify-center space-x-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <button
               onClick={() => setIsMuted(!isMuted)}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"

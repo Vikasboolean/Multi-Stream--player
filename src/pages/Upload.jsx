@@ -177,15 +177,15 @@ const Upload = () => {
         : 'audio/*';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-2xl">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-2xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8"
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 sm:p-8"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Upload media
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
@@ -229,7 +229,7 @@ const Upload = () => {
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               Source
             </p>
-            <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 p-1 bg-gray-50 dark:bg-gray-900/50">
+            <div className="grid grid-cols-1 gap-1 rounded-lg border border-gray-200 dark:border-gray-700 p-1 bg-gray-50 dark:bg-gray-900/50 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={() => setSourceMode('file')}
@@ -424,7 +424,7 @@ const Upload = () => {
               </div>
             )}
 
-            <div className="flex space-x-4">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="submit"
                 className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"

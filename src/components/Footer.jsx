@@ -4,8 +4,8 @@ import { FiGithub, FiTwitter, FiLinkedin } from 'react-icons/fi';
 const Footer = () => {
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-3 py-6 sm:px-4 sm:py-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               MediaStream
@@ -89,7 +89,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+        <div className="mt-6 pt-6 sm:mt-8 sm:pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             © 2024 MediaStream. All rights reserved.
           </p>

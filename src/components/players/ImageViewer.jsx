@@ -87,10 +87,10 @@ const ImageViewer = ({ media, images = [], onClose }) => {
           </>
         )}
 
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 backdrop-blur-sm rounded-lg p-4 flex items-center space-x-4 z-10">
+        <div className="absolute bottom-3 left-3 right-3 bg-black/50 backdrop-blur-sm rounded-lg p-3 flex flex-col items-center gap-3 z-10 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:flex-row sm:p-4">
           <div className="text-white text-center">
-            <h3 className="text-lg font-semibold">{currentImage.title}</h3>
-            <p className="text-sm text-gray-300">{currentImage.description}</p>
+            <h3 className="text-base sm:text-lg font-semibold line-clamp-1">{currentImage.title}</h3>
+            <p className="hidden text-sm text-gray-300 sm:block">{currentImage.description}</p>
             {imageList.length > 1 && (
               <p className="text-xs text-gray-400 mt-1">
                 {currentIndex + 1} / {imageList.length}
@@ -98,7 +98,7 @@ const ImageViewer = ({ media, images = [], onClose }) => {
             )}
           </div>
 
-          <div className="flex items-center space-x-2 border-l border-white/20 pl-4">
+          <div className="flex items-center gap-2 sm:border-l sm:border-white/20 sm:pl-4">
             {imageList.length > 1 && (
               <button
                 onClick={() => setIsSlideshow(!isSlideshow)}
@@ -153,7 +153,7 @@ const ImageViewer = ({ media, images = [], onClose }) => {
         </div>
 
         {imageList.length > 1 && (
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 flex space-x-2 z-10 sm:bottom-20">
             {imageList.map((_, index) => (
               <button
                 key={index}

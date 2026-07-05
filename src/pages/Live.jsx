@@ -142,11 +142,11 @@ const Live = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Link
                 to="/browse"
                 className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
@@ -154,7 +154,7 @@ const Live = () => {
                 <FiArrowLeft className="w-4 h-4" />
                 Back
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <FiRadio className="w-7 h-7" />
                 Live Streaming
               </h1>
@@ -176,7 +176,7 @@ const Live = () => {
               </p>
               <Link
                 to="/live/go"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+                className="inline-flex w-full items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors sm:w-auto"
               >
                 <FiVideo className="w-4 h-4" />
                 Start live from device
@@ -187,7 +187,7 @@ const Live = () => {
             <div className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-black shadow-lg">
               {selectedLive ? (
                 <>
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-2">
+                  <div className="absolute top-2 left-2 right-2 z-10 flex flex-wrap items-center gap-2 sm:top-3 sm:left-3 sm:right-auto">
                     <span className="inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 text-xs font-bold text-white">
                       <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
                       LIVE
@@ -234,7 +234,7 @@ const Live = () => {
               <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Your live stream URL (HLS)
               </p>
-              <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   ref={customUrlRef}
                   type="url"

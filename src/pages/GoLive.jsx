@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { FiCamera, FiCopy, FiMic, FiRadio, FiSlash, FiUsers, FiVideo, FiX } from 'react-icons/fi';
+import { FiCamera, FiCopy, FiMic, FiMonitor, FiRadio, FiSlash, FiUsers, FiVideo, FiX } from 'react-icons/fi';
 import { createSignalingSocket } from '../lib/signaling';
 import { registerLiveRoom, unregisterLiveRoom } from '../lib/liveRooms';
 
@@ -14,6 +14,7 @@ const GoLive = () => {
   const [error, setError] = useState('');
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
+  const [screenSharing, setScreenSharing] = useState(false);
   const [viewerCount, setViewerCount] = useState(0);
   const [streamTitle, setStreamTitle] = useState('');
 
@@ -24,11 +25,17 @@ const GoLive = () => {
   const localStreamRef = useRef(null);
   const peersRef = useRef(new Map()); // viewerId -> RTCPeerConnection
   const localVideoRef = useRef(null);
+  const statusRef = useRef(status);
+  const screenSharingRef = useRef(false);
 
   const shareUrl = useMemo(() => {
     if (!roomId) return '';
     return `${window.location.origin}/live/watch/${roomId}`;
   }, [roomId]);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
 
   const readViewerCount = (msg, fallback) =>
     Number.isFinite(msg.viewerCount) ? msg.viewerCount : fallback;
@@ -60,6 +67,8 @@ const GoLive = () => {
       for (const t of localStreamRef.current.getTracks()) t.stop();
       localStreamRef.current = null;
     }
+    screenSharingRef.current = false;
+    setScreenSharing(false);
   };
 
   useEffect(() => {
@@ -78,7 +87,94 @@ const GoLive = () => {
   useEffect(() => setTrackEnabled('audio', micOn), [micOn]);
   useEffect(() => setTrackEnabled('video', camOn), [camOn]);
 
-  const startLive = async () => {
+  const replaceVideoTrack = async (nextTrack) => {
+    const stream = localStreamRef.current;
+    if (!stream) return;
+
+    const [previousTrack] = stream.getVideoTracks();
+    nextTrack.enabled = camOn;
+
+    if (previousTrack) {
+      stream.removeTrack(previousTrack);
+    }
+    stream.addTrack(nextTrack);
+
+    const replacePromises = [];
+    for (const pc of peersRef.current.values()) {
+      const sender = pc.getSenders().find((item) => item.track?.kind === 'video');
+      if (sender) {
+        replacePromises.push(sender.replaceTrack(nextTrack));
+      } else {
+        pc.addTrack(nextTrack, stream);
+      }
+    }
+
+    await Promise.all(replacePromises);
+    if (previousTrack && previousTrack !== nextTrack) previousTrack.stop();
+    if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+  };
+
+  const switchToCamera = async () => {
+    if (!localStreamRef.current || statusRef.current === 'idle' || statusRef.current === 'ended') return;
+
+    try {
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+      });
+      const [cameraTrack] = cameraStream.getVideoTracks();
+      if (!cameraTrack) throw new Error('Could not access camera video.');
+
+      screenSharingRef.current = false;
+      setScreenSharing(false);
+      await replaceVideoTrack(cameraTrack);
+    } catch (e) {
+      setError(e?.message || 'Could not switch back to camera.');
+    }
+  };
+
+  const markScreenSharing = (screenTrack) => {
+    screenSharingRef.current = true;
+    setScreenSharing(true);
+    screenTrack.onended = () => {
+      if (screenSharingRef.current) switchToCamera();
+    };
+  };
+
+  const startScreenShare = async () => {
+    if (!localStreamRef.current || statusRef.current !== 'live') return;
+
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      setError('Screen sharing is not supported in this browser.');
+      return;
+    }
+
+    setError('');
+
+    try {
+      const displayStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false,
+      });
+      const [screenTrack] = displayStream.getVideoTracks();
+      if (!screenTrack) throw new Error('No screen video track selected.');
+
+      markScreenSharing(screenTrack);
+      await replaceVideoTrack(screenTrack);
+    } catch (e) {
+      if (e?.name !== 'NotAllowedError') {
+        setError(e?.message || 'Could not start screen sharing.');
+      }
+      screenSharingRef.current = false;
+      setScreenSharing(false);
+    }
+  };
+
+  const stopScreenShare = async () => {
+    if (!screenSharingRef.current) return;
+    await switchToCamera();
+  };
+
+  const startLive = async (source = 'camera') => {
     setError('');
 
     const title = window.prompt('Enter a title for your live stream:', streamTitle || '');
@@ -95,10 +191,35 @@ const GoLive = () => {
     setStatus('starting');
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-      });
+      let stream;
+
+      if (source === 'screen') {
+        if (!navigator.mediaDevices?.getDisplayMedia) {
+          throw new Error('Screen sharing is not supported in this browser.');
+        }
+
+        const displayStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false,
+        });
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const [screenTrack] = displayStream.getVideoTracks();
+        if (!screenTrack) throw new Error('No screen video track selected.');
+
+        markScreenSharing(screenTrack);
+        stream = new MediaStream([
+          ...micStream.getAudioTracks(),
+          screenTrack,
+        ]);
+      } else {
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+        });
+        screenSharingRef.current = false;
+        setScreenSharing(false);
+      }
+
       localStreamRef.current = stream;
       if (localVideoRef.current) localVideoRef.current.srcObject = stream;
 
@@ -258,18 +379,18 @@ const GoLive = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      <div className="container mx-auto px-4 max-w-5xl">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Link
                 to="/live"
                 className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
               >
                 Back
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <FiRadio className="w-7 h-7" />
                 Go Live
               </h1>
@@ -284,7 +405,7 @@ const GoLive = () => {
           <div className="lg:col-span-2">
             <div className="relative rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-black shadow-lg">
               {(status === 'live' || status === 'starting') && (
-                <div className="absolute top-3 left-3 z-10 flex items-center gap-2">
+                <div className="absolute top-2 left-2 right-2 z-10 flex flex-wrap items-center gap-2 sm:top-3 sm:left-3 sm:right-auto">
                   <span className="inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 text-xs font-bold text-white">
                     <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
                     LIVE
@@ -294,7 +415,7 @@ const GoLive = () => {
                     {viewerCount} {viewerCount === 1 ? 'viewer' : 'viewers'}
                   </span>
                   {streamTitle && (
-                    <span className="inline-flex max-w-[260px] items-center rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white border border-white/20 backdrop-blur-md truncate">
+                    <span className="inline-flex max-w-full sm:max-w-[260px] items-center rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white border border-white/20 backdrop-blur-md truncate">
                       {streamTitle}
                     </span>
                   )}
@@ -309,12 +430,12 @@ const GoLive = () => {
               />
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
               <button
                 type="button"
                 onClick={() => setCamOn((v) => !v)}
                 disabled={status !== 'live' && status !== 'starting'}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
               >
                 <FiCamera className="w-4 h-4" />
                 {camOn ? 'Camera on' : 'Camera off'}
@@ -323,26 +444,49 @@ const GoLive = () => {
                 type="button"
                 onClick={() => setMicOn((v) => !v)}
                 disabled={status !== 'live' && status !== 'starting'}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white disabled:opacity-60"
               >
                 <FiMic className="w-4 h-4" />
                 {micOn ? 'Mic on' : 'Mic off'}
               </button>
+              <button
+                type="button"
+                onClick={screenSharing ? stopScreenShare : startScreenShare}
+                disabled={status !== 'live'}
+                className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border font-semibold transition-colors disabled:opacity-60 ${
+                  screenSharing
+                    ? 'bg-yellow-500 text-gray-950 border-yellow-500 hover:bg-yellow-400'
+                    : 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                <FiMonitor className="w-4 h-4" />
+                {screenSharing ? 'Stop Screen Share' : 'Share My Screen'}
+              </button>
 
               {status === 'idle' || status === 'error' || status === 'ended' ? (
-                <button
-                  type="button"
-                  onClick={startLive}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
-                >
-                  <FiVideo className="w-4 h-4" />
-                  Start Live Stream
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => startLive('camera')}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+                  >
+                    <FiVideo className="w-4 h-4" />
+                    Start Live Stream
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => startLive('screen')}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+                  >
+                    <FiMonitor className="w-4 h-4" />
+                    Start Live With Screen Share
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
                   onClick={endLive}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-gray-900 text-white font-semibold hover:bg-black transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-lg bg-gray-900 text-white font-semibold hover:bg-black transition-colors"
                 >
                   <FiX className="w-4 h-4" />
                   End Stream
